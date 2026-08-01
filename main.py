@@ -2,13 +2,18 @@ from playwright.sync_api import sync_playwright
 
 from config import HEADLESS, TIMEOUT_MS
 from mailer import mail_gonder
-from stores.mediamarkt import urun_bilgilerini_bul
+from stores.mediamarkt import (
+    urun_bilgilerini_bul as mediamarkt_urunlerini_bul,
+)
+from stores.teknosa import (
+    urun_bilgilerini_bul as teknosa_urunlerini_bul,
+)
 
 
 def main() -> None:
-    print("=" * 50)
+    print("=" * 55)
     print("📱 iPad Air M4 Çok Mağazalı Fiyat Takibi")
-    print("=" * 50)
+    print("=" * 55)
 
     tum_urunler: list[dict] = []
 
@@ -22,12 +27,27 @@ def main() -> None:
         )
 
         try:
-            mediamarkt_urunleri = urun_bilgilerini_bul(
-                browser=browser,
-                timeout_ms=TIMEOUT_MS,
-            )
+            try:
+                mediamarkt_urunleri = mediamarkt_urunlerini_bul(
+                    browser=browser,
+                    timeout_ms=TIMEOUT_MS,
+                )
 
-            tum_urunler.extend(mediamarkt_urunleri)
+                tum_urunler.extend(mediamarkt_urunleri)
+
+            except Exception as hata:
+                print(f"❌ MediaMarkt hatası: {hata}")
+
+            try:
+                teknosa_urunleri = teknosa_urunlerini_bul(
+                    browser=browser,
+                    timeout_ms=TIMEOUT_MS,
+                )
+
+                tum_urunler.extend(teknosa_urunleri)
+
+            except Exception as hata:
+                print(f"❌ Teknosa hatası: {hata}")
 
         finally:
             browser.close()
@@ -36,7 +56,8 @@ def main() -> None:
 
     if not tum_urunler:
         raise RuntimeError(
-            "Hiç ürün bulunamadı. Mail gönderilmedi."
+            "Hiçbir mağazadan ürün bulunamadı. "
+            "Mail gönderilmedi."
         )
 
     mail_gonder(tum_urunler)
