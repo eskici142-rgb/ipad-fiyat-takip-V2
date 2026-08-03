@@ -57,8 +57,8 @@ def urun_bilgilerini_bul(browser, timeout_ms):
 
             print(f"🏬 Vatan: {boyut} {kapasite} - ₺{temiz_fiyat(fiyat)}")
 
-        except Exception:
-            pass
+        except Exception as e:
+    print(f"Vatan kart hatası: {e}")
 
     page.close()
 
