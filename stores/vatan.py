@@ -10,15 +10,21 @@ def temiz_fiyat(text):
 
 def urun_bilgilerini_bul(browser, timeout_ms):
 
+    print("🏬 Vatan fonksiyonu çalıştı")
+
     urunler = []
 
     page = browser.new_page()
 
     page.goto(URL, timeout=timeout_ms)
 
+    print("Sayfa başlığı:", page.title())
+
     page.wait_for_timeout(5000)
 
     kartlar = page.locator("a.product-list-link")
+
+    print("Bulunan kart sayısı:", kartlar.count())
 
     for kart in kartlar.all():
 
