@@ -8,6 +8,9 @@ from stores.mediamarkt import (
 from stores.teknosa import (
     urun_bilgilerini_bul as teknosa_urunlerini_bul,
 )
+from stores.vatan import (
+    urun_bilgilerini_bul as vatan_urunlerini_bul,
+)
 
 
 def main() -> None:
@@ -48,6 +51,16 @@ def main() -> None:
 
             except Exception as hata:
                 print(f"❌ Teknosa hatası: {hata}")
+            try:
+                vatan_urunleri = vatan_urunlerini_bul(
+                    browser=browser,
+                    timeout_ms=TIMEOUT_MS,
+                )
+
+                tum_urunler.extend(vatan_urunleri)
+
+            except Exception as hata:
+                print(f"❌ Vatan hatası: {hata}") 
 
         finally:
             browser.close()
